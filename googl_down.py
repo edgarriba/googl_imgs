@@ -32,6 +32,9 @@ def search(searchTerm, nSearches=8):
        'Accept-Language': 'en-US,en;q=0.8',
        'Connection': 'keep-alive'}
 
+  # for some reason it returns: urllib2.HTTPError: HTTP Error 403: Forbidden
+  #for i in xrange('0',nSearches/4):
+
   # construct the query url
   url_query = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=' + searchTerm + '&start=0&as_filetype=jpg'
   print url_query
@@ -62,7 +65,6 @@ def search(searchTerm, nSearches=8):
       cv2.waitKey(1000)
       cv2.destroyAllWindows()
     except cv2.error as e:
-      # Throw away some gifs...blegh.
       print 'ERROR: %s with url: %s ' % (e, url)
       continue
 
