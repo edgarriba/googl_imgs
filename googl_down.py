@@ -16,41 +16,45 @@ def url_to_image(url):
   return img
 
 # search images in Google Images given a set of words
-def search(query):
+# searchTerm The set of words to search
+# nSearches The number of images, must be multiple of 4
+def search(searchTerm, nSearches=8):
 
   # if its a list, parse as 'string1+string2+..+stringN'
   # Example: ['hello','world'] --> hello+world
-  query = '+'.join(query)
+  searchTerm = '+'.join(searchTerm)
 
-  # construct the query url
-  url_query = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=%s&as_filetype=jpg' % (query)
+  for i in range(0, nSearches/4):
 
-  #request = urllib2.Request(url, None, {'Referer': /* Enter the URL of your site here */})
-  request = urllib2.Request(url_query, None)
-  response = urllib2.urlopen(request)
-
-  # Process the JSON string.
-  results = simplejson.load(response)
-
-  # read the results
-  for image_info in results['responseData']['results']:
+    # construct the query url
+    url_query = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=' + searchTerm + '&start='+str(i*4)+ '&as_filetype=jpg'
     
-    # wrap image url
-    url = image_info['unescapedUrl']
-    
-    # parse the url and construct an opencv Mat
-    img = url_to_image(url)
+    #request = urllib2.Request(url, None, {'Referer': /* Enter the URL of your site here */})
+    request = urllib2.Request(url_query, None)
+    response = urllib2.urlopen(request)
 
-    try:
-      # show the image
-      cv2.namedWindow('vis', 0)
-      cv2.imshow('vis', img)
-      cv2.waitKey(1000)
-      cv2.destroyAllWindows()
-    except cv2.error as e:
-      # Throw away some gifs...blegh.
-      print 'ERROR: %s with url: %s ' % (e, url)
-      continue
+    # Process the JSON string.
+    results = simplejson.load(response)
+
+    # read the results
+    for image_info in results['responseData']['results']:
+      
+      # wrap image url
+      url = image_info['unescapedUrl']
+
+      # parse the url and construct an opencv Mat
+      img = url_to_image(url)
+
+      try:
+        # show the image
+        cv2.namedWindow('vis', 0)
+        cv2.imshow('vis', img)
+        cv2.waitKey(1000)
+        cv2.destroyAllWindows()
+      except cv2.error as e:
+        # Throw away some gifs...blegh.
+        print 'ERROR: %s with url: %s ' % (e, url)
+        continue
 
 
 # Example
