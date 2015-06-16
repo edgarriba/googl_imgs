@@ -67,6 +67,7 @@ def search(searchTerm, nSearches=8):
     except cv2.error as e:
       print 'ERROR: %s with url: %s ' % (e, url)
       continue
+ 
 
 # Example
 if __name__ == "__main__":
